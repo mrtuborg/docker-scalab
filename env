@@ -1,0 +1,31 @@
+#!/bin/bash
+# This file should be sourced, not executed
+
+SCALAB_DOCKER_IMAGE=scalab:1.0
+
+pwd_alias() { echo "$PWD";}
+      cwd() { basename $(pwd_alias); }
+
+scalab_dock() { 
+    docker run -it --rm --privileged --name=scalabTracer \
+                  -v $(pwd_alias)/..:/ws \
+			      -e HISTFILE="/ws/$(cwd)/bash_history" \
+                  -e PIN_ROOT="/opt/pin-2.14-71313-gcc.4.4.7-linux" \
+                  --workdir=/ws/$(cwd) \
+                  ${SCALAB_DOCKER_IMAGE} /bin/bash -c "$*" 
+}
+
+usage() {
+    echo
+}
+
+scalab() { 
+    scalab_dock "$*";
+}
+
+echo " This environment has following functions:"
+echo "============================================"
+echo " * scalab_shell     - start shell for Side Channel Attacks Lab"
+echo " * scalab_exec      - execute command in the Side Channel Attacks Lab"
+echo
+
